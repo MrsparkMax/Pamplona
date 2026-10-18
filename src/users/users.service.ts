@@ -20,7 +20,7 @@ export class UsersService {
 
   async findByUsername(username: string) {
     const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT id, username, password, role, refresh_token FROM users WHERE username = ?',
+      'SELECT user_id AS id, username, password, role, refresh_token FROM users WHERE username = ?',
       [username],
     );
     return rows[0];
@@ -28,7 +28,7 @@ export class UsersService {
 
   async findById(id: number) {
     const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT id, username, role, created_at FROM users WHERE id = ?',
+      'SELECT user_id AS id, username, role, created_at FROM users WHERE user_id = ?',
       [id],
     );
     return rows[0];
@@ -36,7 +36,7 @@ export class UsersService {
 
   async getAll() {
     const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT id, username, role, created_at FROM users',
+      'SELECT user_id AS id, username, role, created_at FROM users',
     );
     return rows;
   }
@@ -59,23 +59,23 @@ export class UsersService {
     }
     if (fields.length === 0) return await this.findById(id);
     values.push(id);
-    const sql = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
+    const sql = `UPDATE users SET ${fields.join(', ')} WHERE user_id = ?`;
     await this.pool().execute(sql, values);
     return this.findById(id);
   }
 
   async deleteUser(id: number) {
-    const [res] = await this.pool().execute<OkPacket>('DELETE FROM users WHERE id = ?', [id]);
+    const [res] = await this.pool().execute<OkPacket>('DELETE FROM users WHERE user_id = ?', [id]);
     return res.affectedRows > 0;
   }
 
   async setRefreshToken(id: number, refreshToken: string | null) {
-    await this.pool().execute('UPDATE users SET refresh_token = ? WHERE id = ?', [refreshToken, id]);
+    await this.pool().execute('UPDATE users SET refresh_token = ? WHERE user_id = ?', [refreshToken, id]);
   }
 
   async findByRefreshToken(refreshToken: string) {
     const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT id, username, role FROM users WHERE refresh_token = ?',
+      'SELECT user_id AS id, username, role FROM users WHERE refresh_token = ?',
       [refreshToken],
     );
     return rows[0];
