@@ -9,7 +9,7 @@ export class AuthService {
   constructor(private usersService: UsersService, private jwtService: JwtService) {}
 
   async validateUser(username: string, pass: string) {
-    const user = await this.usersService.findByUsername(username);
+    const [user] = await this.usersService.findByUsername(username);
     if (!user) return null;
     const valid = await bcrypt.compare(pass, user.password);
     if (valid) return { id: user.id, username: user.username, role: user.role };
@@ -43,7 +43,7 @@ export class AuthService {
       const user = await this.usersService.findById(decoded.sub);
       if (!user) throw new UnauthorizedException('Invalid refresh token');
 
-      const found = await this.usersService.findByRefreshToken(refreshToken);
+      const [found] = await this.usersService.findByRefreshToken(refreshToken);
       if (!found) throw new UnauthorizedException('Invalid refresh token (not found)');
 
       const payload = { sub: found.id, username: found.username, role: found.role };
