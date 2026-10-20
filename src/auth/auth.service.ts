@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   async logout(userId: number) {
-    await this.usersService.setRefreshToken(userId, null);
+    await this.usersService.setRefreshToken(userId, '');
     return { ok: true };
   }
 

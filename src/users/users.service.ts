@@ -69,8 +69,11 @@ export class UsersService {
     return res.affectedRows > 0;
   }
 
-  async setRefreshToken(id: number, refreshToken: string | null) {
-    await this.pool().execute('UPDATE users SET refresh_token = ? WHERE user_id = ?', [refreshToken, id]);
+ async setRefreshToken(userId: number, refreshToken: string) {
+    await this.pool().execute<OkPacket>(
+      'UPDATE users SET refresh_token = ? WHERE id = ?',
+      [refreshToken, userId],
+    );
   }
 
   async findByRefreshToken(refreshToken: string) {
