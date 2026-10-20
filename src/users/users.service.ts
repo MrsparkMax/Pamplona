@@ -19,26 +19,26 @@ export class UsersService {
   }
 
   async findByUsername(username: string) {
-    const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT user_id AS id, username, password, role, refresh_token FROM users WHERE username = ?',
+    const [user] = await this.pool().execute<RowDataPacket[]>(
+      'SELECT id, username, password, role, refresh_token FROM users WHERE username = ?',
       [username],
     );
-    return rows[0];
+    return user;
   }
 
   async findById(id: number) {
-    const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT user_id AS id, username, role, created_at FROM users WHERE user_id = ?',
+    const [user] = await this.pool().execute<RowDataPacket[]>(
+      'SELECT id, username, role, created_at FROM users WHERE id = ?',
       [id],
     );
-    return rows[0];
+    return user;
   }
 
   async getAll() {
-    const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT user_id AS id, username, role, created_at FROM users',
+    const [users] = await this.pool().execute<RowDataPacket[]>(
+      'SELECT id, username, role, created_at FROM users',
     );
-    return rows;
+    return users;
   }
 
   async updateUser(id: number, partial: { username?: string; password?: string; role?: string }) {
@@ -74,10 +74,10 @@ export class UsersService {
   }
 
   async findByRefreshToken(refreshToken: string) {
-    const [rows] = await this.pool().execute<RowDataPacket[]>(
-      'SELECT user_id AS id, username, role FROM users WHERE refresh_token = ?',
+    const [user] = await this.pool().execute<RowDataPacket[]>(
+      'SELECT id, username, role FROM users WHERE refresh_token = ?',
       [refreshToken],
     );
-    return rows[0];
+    return user;
   }
 }
