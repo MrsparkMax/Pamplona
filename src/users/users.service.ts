@@ -59,13 +59,13 @@ export class UsersService {
     }
     if (fields.length === 0) return await this.findById(id);
     values.push(id);
-    const sql = `UPDATE users SET ${fields.join(', ')} WHERE user_id = ?`;
+    const sql = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
     await this.pool().execute(sql, values);
     return this.findById(id);
   }
 
   async deleteUser(id: number) {
-    const [res] = await this.pool().execute<OkPacket>('DELETE FROM users WHERE user_id = ?', [id]);
+    const [res] = await this.pool().execute<OkPacket>('DELETE FROM users WHERE id = ?', [id]);
     return res.affectedRows > 0;
   }
 
